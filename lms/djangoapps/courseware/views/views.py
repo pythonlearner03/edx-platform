@@ -1027,21 +1027,22 @@ def _missing_required_verification(student, enrollment_mode):
 
 
 def _certificate_message(student, course, enrollment_mode):
-    if certs_api.is_certificate_invalid(student, course.id):
-        return INVALID_CERT_DATA
+    if certs_api.has_html_certificates_enabled(course) and certs_api.has_any_active_web_certificate(course):
+        if certs_api.is_certificate_invalid(student, course.id):
+            return INVALID_CERT_DATA
 
-    cert_downloadable_status = certs_api.certificate_downloadable_status(student, course.id)
+        cert_downloadable_status = certs_api.certificate_downloadable_status(student, course.id)
 
-    if cert_downloadable_status['is_generating']:
-        return GENERATING_CERT_DATA
+        if cert_downloadable_status['is_generating']:
+            return GENERATING_CERT_DATA
 
-    if cert_downloadable_status['is_unverified'] or _missing_required_verification(student, enrollment_mode):
-        return UNVERIFIED_CERT_DATA
+        if cert_downloadable_status['is_unverified'] or _missing_required_verification(student, enrollment_mode):
+            return UNVERIFIED_CERT_DATA
 
-    if cert_downloadable_status['is_downloadable']:
-        return _downloadable_certificate_message(course, cert_downloadable_status)
+        if cert_downloadable_status['is_downloadable']:
+            return _downloadable_certificate_message(course, cert_downloadable_status)
 
-    return REQUESTING_CERT_DATA
+        return REQUESTING_CERT_DATA
 
 
 def _get_cert_data(student, course, enrollment_mode, course_grade=None):
