@@ -24,7 +24,6 @@ pipeline {
         stage('Run Tests') {
             parallel {
                 stage('lms-unit') {
-                    agent { label "jenkins-worker" }
                     environment {
                         XDIST_NUM_TASKS = 10
                         XDIST_CONTAINER_TASK_NAME = "jenkins-worker-task"
@@ -34,7 +33,8 @@ pipeline {
                     steps {
                         ansiColor('gnome-terminal') {
                             sshagent(credentials: ['ubuntu'], ignoreMissing: true) {
-                                sh returnStdout: true, script: '''bash scripts/xdist/prepare_xdist_nodes.sh
+                                sh returnStdout: true, script: '''source scripts/jenkins-common.sh
+                                    bash scripts/xdist/prepare_xdist_nodes.sh
                                     bash scripts/generic-ci-tests.sh'''
                                 dir('stdout') {
                                     writeFile file: "lms-unit-stdout.log", text: console_output
