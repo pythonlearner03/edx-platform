@@ -29,6 +29,7 @@ pipeline {
                         XDIST_NUM_TASKS = 10
                         XDIST_CONTAINER_TASK_NAME = "jenkins-worker-task"
                         XDIST_GIT_BRANCH = "master"
+                        TEST_SUITE = "lms-unit"
                     }
                     steps {
                         ansiColor('gnome-terminal') {
