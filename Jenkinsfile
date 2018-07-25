@@ -6,8 +6,8 @@ pipeline {
         timeout(75)
     }
     environment {
-        XDIST_CONTAINER_SUBNET = credentials('xdist-container-subnet')
-        XDIST_CONTAINER_SECURITY_GROUP = credentials('xdist-container-security-group')
+        XDIST_CONTAINER_SUBNET = credentials('XDIST_CONTAINER_SUBNET')
+        XDIST_CONTAINER_SECURITY_GROUP = credentials('XDIST_CONTAINER_SECURITY_GROUP')
     }
     stages {
         stage('Git checkout'){
