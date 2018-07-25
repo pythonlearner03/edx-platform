@@ -29,13 +29,19 @@ set -e
 #
 ###############################################################################
 
-PAVER_ARGS="-v"
-PARALLEL="--processes=-1"
 export SKIP_NPM_INSTALL="True"
 
 # Skip re-installation of Python prerequisites inside a tox execution.
 if [[ -n "$TOXENV" ]]; then
     export NO_PREREQ_INSTALL="True"
+fi
+
+if [[ -f pytest_task_ips.txt ]]; then
+    PAVER_ARGS="-v --xdist_ip_addresses $(<pytest_task_ips.txt)"
+    export SHARD="all"
+else
+    PAVER_ARGS="-v"
+    PARALLEL="--processes=-1"
 fi
 
 case "${TEST_SUITE}" in
