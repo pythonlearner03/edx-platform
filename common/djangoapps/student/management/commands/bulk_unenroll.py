@@ -32,32 +32,31 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         csv_path = options['csv_path']
         with open(csv_path, 'rb') as csvfile:
-            reader = csv.reader(csvfile)
-            for counter, row in enumerate(reader):
-                if counter > 0:
-                    username = row[1]
-                    email = row[2]
-                    course_key = row[3]
-                    try:
-                        user = User.objects.get(Q(username=username) | Q(email=email))
-                    except ObjectDoesNotExist:
-                        user = None
-                        msg = 'User with username {} or email {} does not exist'.format(username, email)
-                        logger.warning(msg)
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                username = row['username']
+                email = row['email']
+                course_key = row['course_id']
+                try:
+                    user = User.objects.get(Q(username=username) | Q(email=email))
+                except ObjectDoesNotExist:
+                    user = None
+                    msg = 'User with username {} or email {} does not exist'.format(username, email)
+                    logger.warning(msg)
 
-                    try:
-                        course_id = CourseKey.from_string(course_key)
-                    except InvalidKeyError:
-                        course_id = None
-                        msg = 'Invalid or non-existant course id {}'.format(course_key)
-                        logger.warning(msg)
+                try:
+                    course_id = CourseKey.from_string(course_key)
+                except InvalidKeyError:
+                    course_id = None
+                    msg = 'Invalid or non-existant course id {}'.format(course_key)
+                    logger.warning(msg)
 
-                    if user and course_id:
-                        enrollment = CourseEnrollment.get_enrollment(user, course_id)
-                        if not enrollment:
-                            msg = 'Enrollment for the user {} in course {} does not exist!'.format(username, course_key)
-                            logger.warning(msg)
-                        else:
-                            CourseEnrollment.unenroll(user, course_id, skip_refund=True)
-                            msg = 'User {} has been un-enrolled from course {}'.format(username, course_key)
-                            logger.info(msg)
+                if user and course_id:
+                    enrollment = CourseEnrollment.get_enrollment(user, course_id)
+                    if not enrollment:
+                        msg = 'Enrollment for the user {} in course {} does not exist!'.format(username, course_key)
+                        logger.warning(msg)
+                    else:
+                        CourseEnrollment.unenroll(user, course_id, skip_refund=True)
+                        msg = 'User {} has been un-enrolled from course {}'.format(username, course_key)
+                        logger.info(msg)
