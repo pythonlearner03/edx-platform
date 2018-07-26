@@ -162,7 +162,7 @@ class SystemTestSuite(PytestSuite):
         if self.xdist_ip_addresses:
             cmd.append('--dist=loadscope')
             for ip in self.xdist_ip_addresses.split(' '):
-                xdist_string = '--tx ssh=ubuntu@{}//python="source /edx/app/edxapp/edxapp_env; ' \
+                xdist_string = '--tx ssh=-o StrictHostKeyChecking=no ubuntu@{}//python="source /edx/app/edxapp/edxapp_env; ' \
                                'python"//chdir="/edx/app/edxapp/edx-platform"'.format(ip)
                 cmd.append(xdist_string)
             for rsync_dir in Env.rsync_dirs():
@@ -266,7 +266,7 @@ class LibTestSuite(PytestSuite):
         if self.xdist_ip_addresses:
             cmd.append('--dist=loadscope')
             for ip in self.xdist_ip_addresses.split(' '):
-                xdist_string = '--tx ssh=ubuntu@{}//python="source /edx/app/edxapp/edxapp_env; ' \
+                xdist_string = '--tx ssh=-o StrictHostKeyChecking=no ubuntu@{}//python="source /edx/app/edxapp/edxapp_env; ' \
                                'python"//chdir="/edx/app/edxapp/edx-platform"'.format(ip)
                 cmd.append(xdist_string)
             for rsync_dir in Env.rsync_dirs():
