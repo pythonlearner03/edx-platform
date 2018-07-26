@@ -39,6 +39,7 @@ pipeline {
                         ansiColor('gnome-terminal') {
                             sshagent(credentials: ['jenkins-worker', 'jenkins-worker-pem'], ignoreMissing: true) {
                                 sh returnStdout: true, script: '''source scripts/jenkins-common.sh
+                                    pwd
                                     bash scripts/xdist/prepare_xdist_nodes.sh
                                     bash scripts/generic-ci-tests.sh'''
                                 dir('stdout') {
