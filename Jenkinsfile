@@ -30,7 +30,7 @@ pipeline {
             parallel {
                 stage('lms-unit') {
                     environment {
-                        XDIST_NUM_TASKS = 10
+                        XDIST_NUM_TASKS = 1
                         XDIST_CONTAINER_TASK_NAME = "jenkins-worker-task"
                         XDIST_GIT_BRANCH = "master"
                         TEST_SUITE = "lms-unit"
@@ -38,9 +38,9 @@ pipeline {
                     steps {
                         ansiColor('gnome-terminal') {
                             sshagent(credentials: ['jenkins-worker', 'jenkins-worker-pem'], ignoreMissing: true) {
-                                sh returnStdout: true, script: '''source scripts/jenkins-common.sh
-                                    pwd
-                                    bash scripts/xdist/prepare_xdist_nodes.sh
+                                sh returnStdout: true, script: '''source scripts/jenkins-common.sh;
+                                    pwd;
+                                    bash scripts/xdist/prepare_xdist_nodes.sh;
                                     bash scripts/generic-ci-tests.sh'''
                                 dir('stdout') {
                                     writeFile file: "lms-unit-stdout.log", text: console_output
