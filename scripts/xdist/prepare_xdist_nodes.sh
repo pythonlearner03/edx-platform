@@ -18,6 +18,7 @@ do
     cmd=$cmd$container_reqs_cmd
 done
 cmd=$cmd"wait"
+echo "Adding ssh config"
 echo -e "Host * \n StrictHostKeyChecking no" >> ~/.ssh/config
 echo "Executing commmand: $cmd"
 eval $cmd
