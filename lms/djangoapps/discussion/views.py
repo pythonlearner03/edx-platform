@@ -41,7 +41,7 @@ from django_comment_client.utils import (
     is_commentable_divided,
     strip_none
 )
-from django_comment_common.models import CourseDiscussionSettings
+from django_comment_common.models import CourseDiscussionSettings, FORUM_ROLE_COMMUNITY_TA
 from django_comment_common.utils import ThreadContext, get_course_discussion_settings, set_course_discussion_settings
 from openedx.core.djangoapps.plugin_api.views import EdxFragmentView
 from openedx.core.djangoapps.monitoring_utils import function_trace
@@ -149,14 +149,20 @@ def get_threads(request, course, user_info, discussion_id=None, per_page=THREADS
             )
         )
     )
-
+    
     paginated_results = cc.Thread.search(query_params)
     threads = paginated_results.collection
 
     # If not provided with a discussion id, filter threads by commentable ids
     # which are accessible to the current user.
     if discussion_id is None:
-        discussion_category_ids = set(utils.get_discussion_categories_ids(course, request.user))
+        kwargs = {"course": course, "user": request.user}
+        is_forum_community_ta = utils.has_forum_access(
+            request.user, course.id, FORUM_ROLE_COMMUNITY_TA
+        )   
+        if is_forum_community_ta:
+            kwargs["include_all"] = True       
+        discussion_category_ids = set(utils.get_discussion_categories_ids(**kwargs))
         threads = [
             thread for thread in threads
             if thread.get('commentable_id') in discussion_category_ids
