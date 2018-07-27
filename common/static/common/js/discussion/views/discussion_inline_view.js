@@ -78,6 +78,10 @@
             window.user = user;
             DiscussionUtil.setUser(user);
             Content.loadContentInfos(response.annotated_content_info);
+
+            if (response.roles === undefined) {
+                response.roles = {};
+            }
             DiscussionUtil.loadRoles(response.roles);
 
             this.courseSettings = new DiscussionCourseSettings(response.course_settings);
