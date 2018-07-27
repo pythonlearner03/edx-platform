@@ -1,6 +1,6 @@
 import logging
-import csv
 
+import unicodecsv
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.management.base import BaseCommand, CommandError
 from django.db.models import Q
@@ -31,8 +31,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         csv_path = options['csv_path']
-        with open(csv_path, 'rb') as csvfile:
-            reader = csv.DictReader(csvfile)
+        with open(csv_path) as csvfile:
+            reader = unicodecsv.DictReader(csvfile)
             for row in reader:
                 username = row['username']
                 email = row['email']
@@ -48,15 +48,17 @@ class Command(BaseCommand):
                     course_id = CourseKey.from_string(course_key)
                 except InvalidKeyError:
                     course_id = None
-                    msg = 'Invalid or non-existant course id {}'.format(course_key)
+                    msg = 'type: non-existent course id {}'.format(course_key)
                     logger.warning(msg)
 
                 if user and course_id:
                     enrollment = CourseEnrollment.get_enrollment(user, course_id)
                     if not enrollment:
                         msg = 'Enrollment for the user {} in course {} does not exist!'.format(username, course_key)
-                        logger.warning(msg)
-                    else:
-                        CourseEnrollment.unenroll(user, course_id, skip_refund=True)
-                        msg = 'User {} has been un-enrolled from course {}'.format(username, course_key)
                         logger.info(msg)
+                    else:
+                        try:
+                            CourseEnrollment.unenroll(user, course_id, skip_refund=True)
+                        except Exception:
+                            msg = 'Error un-enrolling User {} from course {}'.format(username, course_key)
+                            logger.warning(msg)
