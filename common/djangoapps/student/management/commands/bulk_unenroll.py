@@ -61,4 +61,4 @@ class Command(BaseCommand):
                             CourseEnrollment.unenroll(user, course_id, skip_refund=True)
                         except Exception as err:
                             msg = 'Error un-enrolling User {} from course {}: '.format(username, course_key, err)
-                            logger.error(msg)
+                            logger.error(msg, exc_info=True)
