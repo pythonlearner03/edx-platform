@@ -160,6 +160,8 @@ class SystemTestSuite(PytestSuite):
             cmd.append("-s")
 
         if self.xdist_ip_addresses:
+            print "IP ADDRESSES MIKE: "
+            print self.xdist_ip_addresses
             cmd.append('--dist=loadscope')
             for ip in self.xdist_ip_addresses.split(' '):
                 xdist_string = '--tx ssh=ubuntu@{}//python="source /edx/app/edxapp/edxapp_env; ' \
