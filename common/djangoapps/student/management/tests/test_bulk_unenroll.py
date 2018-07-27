@@ -70,7 +70,8 @@ class BulkUnenrollTests(SharedModuleStoreTestCase):
                     (
                         LOGGER_NAME,
                         'WARNING',
-                        'type: non-existent course id {}'.format('test_course')
+                        'Invalid course id {}, skipping un-enrollement for {}, {}'.format(
+                            'test_course', 'amy', 'amy@pond.com')
                     )
                 )
 

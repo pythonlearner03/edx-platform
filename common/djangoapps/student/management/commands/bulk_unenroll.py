@@ -48,7 +48,7 @@ class Command(BaseCommand):
                     course_id = CourseKey.from_string(course_key)
                 except InvalidKeyError:
                     course_id = None
-                    msg = 'type: non-existent course id {}'.format(course_key)
+                    msg = 'Invalid course id {course_id}, skipping un-enrollement for {username}, {email}'.format(**row)
                     logger.warning(msg)
 
                 if user and course_id:
@@ -59,6 +59,6 @@ class Command(BaseCommand):
                     else:
                         try:
                             CourseEnrollment.unenroll(user, course_id, skip_refund=True)
-                        except Exception:
-                            msg = 'Error un-enrolling User {} from course {}'.format(username, course_key)
-                            logger.warning(msg)
+                        except Exception as err:
+                            msg = 'Error un-enrolling User {} from course {}: '.format(username, course_key, err)
+                            logger.error(msg)
