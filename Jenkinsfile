@@ -13,6 +13,7 @@ pipeline {
     environment {
         XDIST_CONTAINER_SUBNET = credentials('XDIST_CONTAINER_SUBNET')
         XDIST_CONTAINER_SECURITY_GROUP = credentials('XDIST_CONTAINER_SECURITY_GROUP')
+        XDIST_GIT_BRANCH = "${env.ghprbSourceBranch}"
     }
     stages {
         stage('Git checkout'){
@@ -32,7 +33,6 @@ pipeline {
                     environment {
                         XDIST_NUM_TASKS = 10
                         XDIST_CONTAINER_TASK_NAME = "jenkins-worker-task"
-                        XDIST_GIT_BRANCH = "master"
                         TEST_SUITE = "lms-unit"
                     }
                     steps {
