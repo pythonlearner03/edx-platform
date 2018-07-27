@@ -50,6 +50,8 @@ case "${TEST_SUITE}" in
     "lms-unit")
         case "$SHARD" in
             "all")
+                echo "MIKE COMMAND"
+                echo paver test_system -s lms --disable_capture ${PAVER_ARGS} ${PARALLEL} 2> lms-tests.log
                 paver test_system -s lms --disable_capture ${PAVER_ARGS} ${PARALLEL} 2> lms-tests.log
                 ;;
             [1-9])
